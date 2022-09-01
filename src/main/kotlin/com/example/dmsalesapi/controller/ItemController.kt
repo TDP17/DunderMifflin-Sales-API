@@ -20,7 +20,7 @@ class ItemController(private val itemService: ItemService) {
     fun createItem(@RequestBody item: Item): Any {
         val response: Any = itemService.createItem(item);
         return if (response is Item) {
-            ResponseEntity<String>("Item created $response", HttpStatus.CREATED)
+            ResponseEntity<Item>(response, HttpStatus.CREATED)
         } else {
             ResponseEntity(response, HttpStatus.BAD_REQUEST);
         }
