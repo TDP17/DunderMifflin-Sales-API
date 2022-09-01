@@ -7,9 +7,9 @@ import javax.persistence.Id
 
 @Entity
 data class Item (
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    val id: Long,
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long?,
     val name: String,
-    val available: Int,
+    val quantity_available: Int,
     val price: Int,
 )
