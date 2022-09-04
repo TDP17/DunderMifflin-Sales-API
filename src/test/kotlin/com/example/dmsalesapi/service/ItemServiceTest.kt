@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.patch
 import org.springframework.test.web.servlet.post
 
 @SpringBootTest
@@ -69,7 +70,7 @@ internal class ItemServiceTest @Autowired constructor(
 
         // then
         performPost
-//            .andDo { print() }
+            .andDo { print() }
             .andExpect {
                 status { isCreated() }
                 content {
@@ -79,5 +80,34 @@ internal class ItemServiceTest @Autowired constructor(
 
         // after
         itemRepository.deleteByName("NAMEWHICHWILLNEVERBECREATED");
+    }
+
+    @Test
+    fun `should update item and return Accepted (204)`() {
+        //before
+        val item = Item(id = null, name = "UpdateName", quantity_available = 10, price = 10)
+        itemRepository.save(item);
+
+        val newItem = Item(id = null, name = "NewUpdatedItem", quantity_available = 20, price = 20)
+
+        // when
+        val performPost = mockMvc.patch("$baseURL/${item.id}") {
+            contentType = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(newItem)
+        }
+
+        // then
+        performPost
+            .andDo { print() }
+            .andExpect {
+                status { isNoContent() }
+                content {
+                    contentType(MediaType.APPLICATION_JSON)
+                    json("{\"status\":204,\"message\":\"Updated successfully\"}")
+                }
+            }
+
+        // after
+        itemRepository.delete(item);
     }
 }
