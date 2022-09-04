@@ -17,12 +17,11 @@ class ItemController(private val itemService: ItemService) {
 
     @PostMapping("/items")
     @ResponseBody
-    fun createItem(@RequestBody item: Item): Any {
-        val response: Any = itemService.createItem(item);
-        return if (response is Item) {
-            ResponseEntity<Item>(response, HttpStatus.CREATED)
-        } else {
-            ResponseEntity(response, HttpStatus.BAD_REQUEST);
-        }
+    fun createItem(@RequestBody item: Item): ResponseEntity<Item> {
+        val item: Item = itemService.createItem(item)
+        return ResponseEntity<Item>(
+            item,
+            HttpStatus.CREATED
+        )
     }
 }

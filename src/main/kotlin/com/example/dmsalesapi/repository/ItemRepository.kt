@@ -16,5 +16,5 @@ interface ItemRepository : CrudRepository<Item, Long> {
         value = "DELETE FROM item u WHERE u.name = :name",
         nativeQuery = true
     )
-    fun removeByName(@Param("name") name: String)
+    fun deleteByName(@Param("name") name: String)
 }

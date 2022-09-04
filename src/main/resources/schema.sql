@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS customer
 CREATE TABLE IF NOT EXISTS item
 (
     id SERIAL PRIMARY KEY,
-    name VARCHAR NOT NULL,
+    name VARCHAR NOT NULL UNIQUE,
     quantity_available INT NOT NULL,
     price INT NOT NULL
 );
