@@ -22,7 +22,7 @@ internal class ItemServiceTest @Autowired constructor(
     fun `should throw an error if item name is duplicate`() {
         //before
 
-        // For some reason if  id has any duplicate values, no exception will be thrown but no data will be added either
+        // For some reason if id is any duplicate value, no exception will be thrown but no data will be added either
         // This leads to the below workaround
         // @TODO FIX LATER
         val item = Item(id = null, name = "TestName", quantity_available = 10, price = 10)
