@@ -18,10 +18,20 @@ class ItemController(private val itemService: ItemService) {
     @PostMapping("/items")
     @ResponseBody
     fun createItem(@RequestBody item: Item): ResponseEntity<Item> {
-        val item: Item = itemService.createItem(item)
+        val newItem: Item = itemService.createItem(item)
         return ResponseEntity<Item>(
-            item,
+            newItem,
             HttpStatus.CREATED
+        )
+    }
+
+    @PatchMapping("/items/{id}")
+    @ResponseBody
+    fun updateItem(@PathVariable id: Int, @RequestBody item: Item): ResponseEntity<String> {
+        itemService.updateItem(id, item.name, item.price, item.quantity_available)
+        return ResponseEntity<String>(
+            "Updated successfully",
+            HttpStatus.NO_CONTENT
         )
     }
 }
