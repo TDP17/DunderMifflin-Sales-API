@@ -9,7 +9,7 @@ import javax.persistence.Id
 data class Item (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long?,
-    val name: String,
-    val quantity_available: Int,
-    val price: Int,
+    var name: String,
+    var quantity_available: Int,
+    var price: Int,
 )
