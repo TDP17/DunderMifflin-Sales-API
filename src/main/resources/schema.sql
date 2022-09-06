@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS employee
     id SERIAL PRIMARY KEY,
     name VARCHAR NOT NULL,
     mobile VARCHAR NOT NULL,
-    joining_date TIMESTAMP NOT NULL
+    joining_date DATE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS manager
