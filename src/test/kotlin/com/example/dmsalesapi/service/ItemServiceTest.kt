@@ -3,8 +3,6 @@ package com.example.dmsalesapi.service
 import com.example.dmsalesapi.model.Item
 import com.example.dmsalesapi.repository.ItemRepository
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.aspectj.lang.annotation.After
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
