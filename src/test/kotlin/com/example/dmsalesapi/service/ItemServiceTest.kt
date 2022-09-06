@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.delete
 import org.springframework.test.web.servlet.patch
 import org.springframework.test.web.servlet.post
 
@@ -19,12 +20,10 @@ import org.springframework.test.web.servlet.post
 internal class ItemServiceTest @Autowired constructor(
     val mockMvc: MockMvc, val objectMapper: ObjectMapper, val itemRepository: ItemRepository
 ) {
-
     val baseURL: String = "/items/"
 
     @Nested
-    @DisplayName("Post Tests")
-
+    @DisplayName("Create Tests")
     inner class PostRouteTests {
         @Test
         fun `should throw an error if item name is duplicate`() {
@@ -89,20 +88,20 @@ internal class ItemServiceTest @Autowired constructor(
 
     @Nested
     @DisplayName("Update Tests")
-    inner class UpdateRouteTests {
+    inner class PatchRouteTests {
         @Test
         fun `should return 404 and appropriate error if given id is not found`() {
             // given
             val item = Item(id = -1, name = "TestName", quantity_available = 10, price = 10)
 
             // when
-            val performPost = mockMvc.patch("$baseURL/-1") {
+            val performUpdate = mockMvc.patch("$baseURL/-1") {
                 contentType = MediaType.APPLICATION_JSON
                 content = objectMapper.writeValueAsString(item)
             }
 
             // then
-            performPost.andDo { print() }.andExpect {
+            performUpdate.andDo { print() }.andExpect {
                 status { isNotFound() }
                 content {
                     json("{\"status\":404,\"message\":\"No item with given details found\"}")
@@ -120,19 +119,43 @@ internal class ItemServiceTest @Autowired constructor(
             val newItem = Item(id = null, name = "NewUpdatedItem", quantity_available = 20, price = 20)
 
             // when
-            val performPost = mockMvc.patch("$baseURL/${item.id}") {
+            val performUpdate = mockMvc.patch("$baseURL/${item.id}") {
                 contentType = MediaType.APPLICATION_JSON
                 content = objectMapper.writeValueAsString(newItem)
             }
 
             // then
-            performPost.andDo { print() }.andExpect {
+            performUpdate.andDo { print() }.andExpect {
                 status { isNoContent() }
             }
 
             // after
             itemRepository.delete(item)
             itemRepository.delete(newItem)
+        }
+    }
+
+    @Nested
+    @DisplayName("Delete Tests")
+    inner class DeleteRouteTests {
+        @Test
+        fun `should return 404 and appropriate error if given id is not found`() {
+            // given
+            val item = Item(id = -1, name = "TestName", quantity_available = 10, price = 10)
+
+            // when
+            val performDelete = mockMvc.delete("$baseURL/-1") {
+                contentType = MediaType.APPLICATION_JSON
+                content = objectMapper.writeValueAsString(item)
+            }
+
+            // then
+            performDelete.andDo { print() }.andExpect {
+                status { isNotFound() }
+                content {
+                    json("{\"status\":404,\"message\":\"No item with given details found\"}")
+                }
+            }
         }
     }
 }
