@@ -166,11 +166,16 @@ internal class ItemServiceTest @Autowired constructor(
 
             val performGet = mockMvc.get("$baseURL/${item.name}")
             performGet.andDo { print() }.andExpect {
-                status { isNotFound() }
+                status { isOk() }
+                content {
+                    string("")
+                }
             }
         }
     }
-        @AfterEach fun cleanup() {
-            itemRepository.deleteByName("UpdateName")
-        }
+
+    @AfterEach
+    fun cleanup() {
+        itemRepository.deleteByName("UpdateName")
+    }
 }
