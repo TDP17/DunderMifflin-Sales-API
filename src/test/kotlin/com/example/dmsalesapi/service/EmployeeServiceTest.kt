@@ -1,9 +1,7 @@
 package com.example.dmsalesapi.service
 
 import com.example.dmsalesapi.model.Employee
-import com.example.dmsalesapi.model.Item
 import com.example.dmsalesapi.repository.EmployeeRepository
-import com.example.dmsalesapi.repository.ItemRepository
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
@@ -44,10 +42,12 @@ internal class EmployeeServiceTest @Autowired constructor(
                 }
             }
 
-            employeeRepository.findEmployeeByRoleAndId("hr", 1)
+            val employeeInRoleTable = employeeRepository.findEmployeeByRoleAndId("hr", 1)
+
+            assertEquals(false, employeeInRoleTable.isEmpty)
 
             // after
-            // employeeRepository.deleteById(employee.id!!);
+            employeeRepository.deleteById(1);
         }
     }
 }
