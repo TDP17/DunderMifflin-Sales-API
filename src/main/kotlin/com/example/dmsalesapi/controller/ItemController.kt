@@ -34,4 +34,14 @@ class ItemController(private val itemService: ItemService) {
             HttpStatus.NO_CONTENT
         )
     }
+
+    @DeleteMapping("items/{id}")
+    @ResponseBody
+    fun deleteItem(@PathVariable id: Int): ResponseEntity<String> {
+        itemService.deleteItem(id)
+        return ResponseEntity<String>(
+            "Deleted successfully",
+            HttpStatus.NO_CONTENT
+        )
+    }
 }

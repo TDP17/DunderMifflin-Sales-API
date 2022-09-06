@@ -5,6 +5,7 @@ import com.example.dmsalesapi.exceptions.IdNotFoundException
 import com.example.dmsalesapi.model.Item
 import com.example.dmsalesapi.repository.ItemRepository
 import org.springframework.stereotype.Service
+import java.lang.IllegalArgumentException
 import java.util.*
 import kotlin.Exception
 
@@ -22,7 +23,7 @@ class ItemService(private val itemRepository: ItemRepository) {
         }
     }
 
-    fun updateItem(id: Int, _name: String, _price: Int, _quantity_available: Int): Any {
+    fun updateItem(id: Int, _name: String, _price: Int, _quantity_available: Int): Item {
         return try {
             val item: Optional<Item> = itemRepository.findById(id.toLong())
             if (item.isEmpty) {
@@ -37,6 +38,14 @@ class ItemService(private val itemRepository: ItemRepository) {
             }
         } catch (e: Exception) {
             throw e
+        }
+    }
+
+    fun deleteItem(id: Int) {
+        return try {
+            itemRepository.deleteById(id.toLong())
+        } catch (e: Exception) {
+            throw IdNotFoundException("No item with given details found")
         }
     }
 }
