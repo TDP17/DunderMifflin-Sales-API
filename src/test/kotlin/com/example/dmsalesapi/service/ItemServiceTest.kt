@@ -3,6 +3,9 @@ package com.example.dmsalesapi.service
 import com.example.dmsalesapi.model.Item
 import com.example.dmsalesapi.repository.ItemRepository
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.aspectj.lang.annotation.After
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -10,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.delete
-import org.springframework.test.web.servlet.patch
-import org.springframework.test.web.servlet.post
+import org.springframework.test.web.servlet.*
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -140,14 +140,8 @@ internal class ItemServiceTest @Autowired constructor(
     inner class DeleteRouteTests {
         @Test
         fun `should return 404 and appropriate error if given id is not found`() {
-            // given
-            val item = Item(id = -1, name = "TestName", quantity_available = 10, price = 10)
-
             // when
-            val performDelete = mockMvc.delete("$baseURL/-1") {
-                contentType = MediaType.APPLICATION_JSON
-                content = objectMapper.writeValueAsString(item)
-            }
+            val performDelete = mockMvc.delete("$baseURL/-1")
 
             // then
             performDelete.andDo { print() }.andExpect {
@@ -157,5 +151,28 @@ internal class ItemServiceTest @Autowired constructor(
                 }
             }
         }
+
+        @Test
+        fun `should delete item and return Accepted (204) if request is correct`() {
+            // before
+            val item = Item(id = null, name = "UpdateName", quantity_available = 10, price = 10)
+            itemRepository.save(item)
+
+            // when
+            val performDelete = mockMvc.delete("$baseURL/${item.id}")
+
+            // then
+            performDelete.andDo { print() }.andExpect {
+                status { isNoContent() }
+            }
+
+            val performGet = mockMvc.get("$baseURL/${item.name}")
+            performGet.andDo { print() }.andExpect {
+                status { isNotFound() }
+            }
+        }
     }
+        @AfterEach fun cleanup() {
+            itemRepository.deleteByName("UpdateName")
+        }
 }
