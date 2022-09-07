@@ -11,37 +11,38 @@ CREATE TABLE IF NOT EXISTS manager
 (
     id SERIAL PRIMARY KEY,
     branch VARCHAR NOT NULL,
-    employee_id INT NOT NULL REFERENCES employee(id)
+    employee_id INT NOT NULL REFERENCES employee(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS hr
 (
     id SERIAL PRIMARY KEY,
     is_trainer BOOLEAN NOT NULL,
-    employee_id INT NOT NULL REFERENCES employee(id)
+    employee_id INT NOT NULL REFERENCES employee(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS salesperson
 (
     id SERIAL PRIMARY KEY,
     number_of_sales INT NOT NULL,
-    employee_id INT NOT NULL REFERENCES employee(id)
+    employee_id INT NOT NULL REFERENCES employee(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS accountant
 (
     id SERIAL PRIMARY KEY,
-    employee_id INT NOT NULL REFERENCES employee(id)
+    employee_id INT NOT NULL REFERENCES employee(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS darryl
 (
     id SERIAL PRIMARY KEY,
-    employee_id INT NOT NULL REFERENCES employee(id)
+    employee_id INT NOT NULL REFERENCES employee(id) ON DELETE CASCADE
 );
--- Employee related tables end --
 
 -- Supporting tables --
+-- @TODO Add an update clause on delete for employee_id, we want the customer to be accessible with a dummy employee id, say (-1)
+-- @TODO -1 will mean employee is deleted
 CREATE TABLE IF NOT EXISTS customer
 (
     id SERIAL PRIMARY KEY,
@@ -58,9 +59,9 @@ CREATE TABLE IF NOT EXISTS item
     quantity_available INT NOT NULL,
     price INT NOT NULL
 );
--- Supporting tables end --
 
 -- Adds a partitioned table "sale" partitioned by "date" in 4 quarters, only works for 2022 currently.
+-- @TODO decide what to do on deletion of employee id or customer id
 CREATE TABLE IF NOT EXISTS sale
 (
     id SERIAL NOT NULL,
