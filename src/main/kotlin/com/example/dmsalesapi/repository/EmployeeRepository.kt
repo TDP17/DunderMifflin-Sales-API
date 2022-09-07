@@ -1,7 +1,6 @@
 package com.example.dmsalesapi.repository
 
 import com.example.dmsalesapi.model.Employee
-import com.example.dmsalesapi.model.Hr
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository

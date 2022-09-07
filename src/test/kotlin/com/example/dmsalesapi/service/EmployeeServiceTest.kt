@@ -1,7 +1,6 @@
 package com.example.dmsalesapi.service
 
 import com.example.dmsalesapi.repository.EmployeeRepository
-import com.example.dmsalesapi.repository.HrRepository
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
@@ -22,7 +21,6 @@ internal class EmployeeServiceTest @Autowired constructor(
     val mockMvc: MockMvc,
     val objectMapper: ObjectMapper,
     val employeeRepository: EmployeeRepository,
-    val hrRepository: HrRepository,
 ) {
     val baseURL: String = "/employees/"
 
@@ -53,7 +51,7 @@ internal class EmployeeServiceTest @Autowired constructor(
                 val employeeInRoleTable = employeeRepository.fetchFromHr(id)
                 assertEquals(false, employeeInRoleTable.isEmpty)
             } catch (e: Exception) {
-                println(e);
+                println(e)
             }
 //
 //            // after

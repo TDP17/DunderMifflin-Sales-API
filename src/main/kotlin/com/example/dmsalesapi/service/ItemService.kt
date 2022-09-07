@@ -5,9 +5,7 @@ import com.example.dmsalesapi.exceptions.IdNotFoundException
 import com.example.dmsalesapi.model.Item
 import com.example.dmsalesapi.repository.ItemRepository
 import org.springframework.stereotype.Service
-import java.lang.IllegalArgumentException
 import java.util.*
-import kotlin.Exception
 
 @Service
 class ItemService(private val itemRepository: ItemRepository) {

@@ -15,9 +15,9 @@ class EmployeeService(private val employeeRepository: EmployeeRepository) {
         )
 
         return try {
-            val employee = employeeRepository.save(employee)
-            employeeRepository.insertIntoHrTable(true, employee.id!!);
-            employee
+            val createdEmployee = employeeRepository.save(employee)
+            employeeRepository.insertIntoHrTable(true, employee.id!!)
+            createdEmployee
         } catch (e: Exception) {
             throw e
         }

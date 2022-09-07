@@ -57,12 +57,12 @@ internal class ItemServiceTest @Autowired constructor(
         fun `should add the new item if name is not duplicate`() {
             //before
             val price = 2000
-            val quantity_available = 2000
+            val quantityAvailable = 2000
             itemRepository.deleteByName("NAMEWHICHWILLNEVERBECREATED")
 
             // given
             val newItem = Item(
-                id = null, name = "NAMEWHICHWILLNEVERBECREATED", price = price, quantity_available = quantity_available
+                id = null, name = "NAMEWHICHWILLNEVERBECREATED", price = price, quantity_available = quantityAvailable
             )
 
             // when
