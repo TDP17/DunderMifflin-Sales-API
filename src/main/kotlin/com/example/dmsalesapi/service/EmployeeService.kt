@@ -1,5 +1,6 @@
 package com.example.dmsalesapi.service
 
+import com.example.dmsalesapi.exceptions.IdNotFoundException
 import com.example.dmsalesapi.model.Employee
 import com.example.dmsalesapi.repository.EmployeeRepository
 import com.fasterxml.jackson.databind.JsonNode
@@ -24,6 +25,23 @@ class EmployeeService(private val employeeRepository: EmployeeRepository) {
             val createdEmployee = employeeRepository.save(employee)
             employeeRepository.insertIntoHrTable(true, employee.id!!)
             createdEmployee
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    fun updateEmployee(id: Int, _name: String, _mobile: String): Employee {
+        return try {
+            val employee: Optional<Employee> = employeeRepository.findById(id)
+            if (employee.isEmpty) {
+                throw IdNotFoundException("No employee with given details found")
+            } else {
+                val updatedEmployee: Employee = employee.get()
+                updatedEmployee.name = _name
+                updatedEmployee.mobile = _mobile
+
+                employeeRepository.save(updatedEmployee)
+            }
         } catch (e: Exception) {
             throw e
         }
