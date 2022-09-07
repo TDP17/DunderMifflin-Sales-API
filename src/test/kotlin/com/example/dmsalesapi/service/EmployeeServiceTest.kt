@@ -50,7 +50,7 @@ internal class EmployeeServiceTest @Autowired constructor(
             val id = result.response.contentAsString.substring(6, 8).toInt()
 
             try {
-                val employeeInRoleTable = hrRepository.findByEmpId(id)
+                val employeeInRoleTable = employeeRepository.fetchFromHr(id)
                 assertEquals(false, employeeInRoleTable.isEmpty)
             } catch (e: Exception) {
                 println(e);

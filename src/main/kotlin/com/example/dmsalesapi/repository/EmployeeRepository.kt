@@ -13,8 +13,13 @@ interface EmployeeRepository : CrudRepository<Employee, Int> {
     @Transactional
     @Modifying
     @Query(
-        value = "INSERT INTO hr(is_trainer, employee_id) VALUES (:is_trainer, :employee_id)",
-        nativeQuery = true
+        value = "INSERT INTO hr(is_trainer, employee_id) VALUES (:is_trainer, :employee_id)", nativeQuery = true
     )
     fun insertIntoHrTable(@Param("is_trainer") is_trainer: Boolean, @Param("employee_id") id: Int)
+
+    @Query(
+        value = "SELECT name FROM EMPLOYEE JOIN HR ON EMPLOYEE.ID=HR.EMPLOYEE_ID WHERE EMPLOYEE_ID=:employee_id",
+        nativeQuery = true
+    )
+    fun fetchFromHr(@Param("employee_id") employee_id: Int): Optional<String>
 }
