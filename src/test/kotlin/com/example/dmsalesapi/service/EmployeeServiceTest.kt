@@ -19,7 +19,6 @@ import java.lang.Exception
 @AutoConfigureMockMvc
 internal class EmployeeServiceTest @Autowired constructor(
     val mockMvc: MockMvc,
-    val objectMapper: ObjectMapper,
     val employeeRepository: EmployeeRepository,
 ) {
     val baseURL: String = "/employees/"
@@ -45,17 +44,18 @@ internal class EmployeeServiceTest @Autowired constructor(
             }.andReturn()
 
             // Weird hacks here, REFACTOR
-            val id = result.response.contentAsString.substring(6, 8).toInt()
-
+            // Gets the id from the string version of the response, should ideally be converted to an object and parsed, this will fail if the response structure is changed
+            val id = result.response.contentAsString.split(',')[0].substring(6).toInt()
             try {
                 val employeeInRoleTable = employeeRepository.fetchFromHr(id)
                 assertEquals(false, employeeInRoleTable.isEmpty)
             } catch (e: Exception) {
                 println(e)
             }
-//
-//            // after
-//            employeeRepository.deleteById(id);
+
+            // after
+            // Implicitly takes care of dropping value from hr table via cascade constraint
+            employeeRepository.deleteById(id)
         }
     }
 }

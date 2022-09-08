@@ -14,16 +14,41 @@ class EmployeeService(private val employeeRepository: EmployeeRepository) {
     fun getEmployeeById(id: Int): Optional<Employee> = employeeRepository.findById(id)
 
     fun createEmployee(data: JsonNode): Employee {
+
         val employee = Employee(
             id = null,
             data.get("name").textValue(),
             data.get("mobile").textValue(),
         )
 
+        fun handleManager() {
+            val branch = data.get("branch").textValue()
+            employeeRepository.insertIntoManagerTable(branch, employee.id!!)
+        }
+
+        fun handleHr() {
+            val isTrainer = data.get("is_trainer").booleanValue()
+            employeeRepository.insertIntoHrTable(isTrainer, employee.id!!)
+        }
+
+        fun handleSalesperson() {
+            val noOfSales = data.get("no_of_sales").intValue()
+            employeeRepository.insertIntoSalespersonTable(noOfSales, employee.id!!)
+        }
+
+        val role: String = data.get("role").textValue()
+
         return try {
             // @TODO consider a trigger for this instead of 2 operations and their error handling
             val createdEmployee = employeeRepository.save(employee)
-            employeeRepository.insertIntoHrTable(true, employee.id!!)
+            when (role) {
+                "manager" -> handleManager()
+                "salesperson" -> handleSalesperson()
+                "hr" -> handleHr()
+                "accountant" -> employeeRepository.insertIntoAccountantTable(employee.id!!)
+                "darryl" -> employeeRepository.insertIntoDarrylTable(employee.id!!)
+            }
+
             createdEmployee
         } catch (e: Exception) {
             throw e
