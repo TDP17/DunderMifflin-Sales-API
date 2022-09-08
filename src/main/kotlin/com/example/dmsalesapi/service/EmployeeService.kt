@@ -46,4 +46,12 @@ class EmployeeService(private val employeeRepository: EmployeeRepository) {
             throw e
         }
     }
+
+    fun deleteEmployee(id: Int) {
+        return try {
+            employeeRepository.deleteById(id)
+        } catch (e: Exception) {
+            throw IdNotFoundException("No employee with given details found")
+        }
+    }
 }
