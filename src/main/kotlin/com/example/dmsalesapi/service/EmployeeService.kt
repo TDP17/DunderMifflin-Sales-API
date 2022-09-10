@@ -1,10 +1,12 @@
 package com.example.dmsalesapi.service
 
+import com.example.dmsalesapi.exceptions.FieldNotProvidedException
 import com.example.dmsalesapi.exceptions.IdNotFoundException
 import com.example.dmsalesapi.model.Employee
 import com.example.dmsalesapi.repository.EmployeeRepository
 import com.fasterxml.jackson.databind.JsonNode
 import org.springframework.stereotype.Service
+import java.lang.NullPointerException
 import java.util.Optional
 
 @Service
@@ -22,23 +24,34 @@ class EmployeeService(private val employeeRepository: EmployeeRepository) {
         )
 
         fun handleManager() {
-            val branch = data.get("branch").textValue()
-            employeeRepository.insertIntoManagerTable(branch, employee.id!!)
+            try {
+                val branch = data.get("branch").textValue()
+                employeeRepository.insertIntoManagerTable(branch, employee.id!!)
+            } catch (e: NullPointerException) {
+                throw FieldNotProvidedException("Field `branch` not provided");
+            }
         }
 
         fun handleHr() {
-            val isTrainer = data.get("is_trainer").booleanValue()
-            employeeRepository.insertIntoHrTable(isTrainer, employee.id!!)
+            try {
+                val isTrainer = data.get("is_trainer").booleanValue()
+                employeeRepository.insertIntoHrTable(isTrainer, employee.id!!)
+            } catch (e: NullPointerException) {
+                throw FieldNotProvidedException("Field `is_trainer` not provided");
+            }
         }
 
         fun handleSalesperson() {
-            val noOfSales = data.get("no_of_sales").intValue()
-            employeeRepository.insertIntoSalespersonTable(noOfSales, employee.id!!)
+            try {
+                val noOfSales = data.get("no_of_sales").intValue()
+                employeeRepository.insertIntoSalespersonTable(noOfSales, employee.id!!)
+            } catch (e: NullPointerException) {
+                throw FieldNotProvidedException("Field `no_of_sales` not provided");
+            }
         }
 
-        val role: String = data.get("role").textValue()
-
         return try {
+            val role: String = data.get("role").textValue()
             // @TODO consider a trigger for this instead of 2 operations and their error handling
             val createdEmployee = employeeRepository.save(employee)
             when (role) {
@@ -50,8 +63,8 @@ class EmployeeService(private val employeeRepository: EmployeeRepository) {
             }
 
             createdEmployee
-        } catch (e: Exception) {
-            throw e
+        } catch (e: NullPointerException) {
+            throw FieldNotProvidedException("Field `role` not provided");
         }
     }
 
