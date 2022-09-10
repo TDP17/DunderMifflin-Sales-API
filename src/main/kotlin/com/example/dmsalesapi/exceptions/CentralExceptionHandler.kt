@@ -1,6 +1,5 @@
 package com.example.dmsalesapi.exceptions
 
-import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -37,9 +36,21 @@ class CentralExceptionHandler {
 
         return ResponseEntity(errorMessage, HttpStatus.BAD_REQUEST)
     }
+
+    @ExceptionHandler
+    fun handleEmployeeNotFoundException(ex: EmployeeNotFoundException): ResponseEntity<ErrorMessage> {
+        val errorMessage = ErrorMessage(
+            HttpStatus.BAD_REQUEST.value(),
+            ex.message
+        )
+
+        return ResponseEntity(errorMessage, HttpStatus.BAD_REQUEST)
+    }
 }
 
 class DuplicateNameException(message: String) : Exception(message)
 class IdNotFoundException(message: String) : Exception(message)
 
 class FieldNotProvidedException(message: String) : Exception(message)
+
+class EmployeeNotFoundException(message: String) : Exception(message)

@@ -28,7 +28,7 @@ class EmployeeController(private val employeeService: EmployeeService) {
 
     @PatchMapping("/employees/{id}")
     @ResponseBody
-    fun updateItem(@PathVariable id: Int, @RequestBody employee: Employee): ResponseEntity<String> {
+    fun updateEmployee(@PathVariable id: Int, @RequestBody employee: Employee): ResponseEntity<String> {
         employeeService.updateEmployee(id, employee.name, employee.mobile);
         return ResponseEntity<String>(
             "Updated successfully",

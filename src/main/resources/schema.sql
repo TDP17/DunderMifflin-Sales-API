@@ -41,15 +41,14 @@ CREATE TABLE IF NOT EXISTS darryl
 );
 
 -- Supporting tables --
--- @TODO Add an update clause on delete for employee_id, we want the customer to be accessible with a dummy employee id, say (-1)
--- @TODO -1 will mean employee is deleted
+-- @TODO Add an update clause on delete for employee_id, we want the customer to be accessible with set null
 CREATE TABLE IF NOT EXISTS customer
 (
     id SERIAL PRIMARY KEY,
     name VARCHAR NOT NULL,
     mobile VARCHAR NOT NULL,
-    registration_date TIMESTAMP NOT NULL,
-    employee_id INT NOT NULL REFERENCES employee(id)
+    joining_date DATE DEFAULT CURRENT_DATE,
+    employee_id INT NOT NULL REFERENCES employee(id) ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS item
