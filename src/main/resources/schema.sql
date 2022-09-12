@@ -66,8 +66,7 @@ CREATE TABLE IF NOT EXISTS item
 CREATE TABLE IF NOT EXISTS sale
 (
     id SERIAL NOT NULL,
-    quantity INT NOT NULL,
-    date DATE NOT NULL,
+    date DATE DEFAULT CURRENT_DATE NOT NULL,
     employee_id INT NOT NULL REFERENCES employee(id),
     customer_id INT NOT NULL REFERENCES customer(id),
     PRIMARY KEY(id, date)
@@ -91,5 +90,6 @@ CREATE TABLE IF NOT EXISTS sale_item
     sale_id INT NOT NULL,
     sale_date DATE NOT NULL,
     item_id INT NOT NULL REFERENCES item(id),
-    FOREIGN KEY (sale_id, sale_date) REFERENCES sale(id, date)
+    quantity INT NOT NULL,
+    FOREIGN KEY (sale_id, sale_date) REFERENCES sale(id, date) ON DELETE SET NULL
 );
