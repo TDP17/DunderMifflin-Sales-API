@@ -1,7 +1,6 @@
 package com.example.dmsalesapi.controller
 
 import com.example.dmsalesapi.model.Employee
-import com.example.dmsalesapi.model.Item
 import com.example.dmsalesapi.service.EmployeeService
 import com.fasterxml.jackson.databind.JsonNode
 import org.springframework.http.HttpStatus
@@ -29,7 +28,7 @@ class EmployeeController(private val employeeService: EmployeeService) {
     @PatchMapping("/employees/{id}")
     @ResponseBody
     fun updateEmployee(@PathVariable id: Int, @RequestBody employee: Employee): ResponseEntity<String> {
-        employeeService.updateEmployee(id, employee.name, employee.mobile);
+        employeeService.updateEmployee(id, employee.name, employee.mobile)
         return ResponseEntity<String>(
             "Updated successfully",
             HttpStatus.NO_CONTENT

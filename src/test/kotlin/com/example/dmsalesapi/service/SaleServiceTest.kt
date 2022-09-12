@@ -48,7 +48,6 @@ internal class SaleServiceTest @Autowired constructor(
 
             for (entry: ItemQuantityMappingEntity in createdSaleEntity.itemList) {
                 try {
-                    println("${entry.id} ${entry.quantity} ${createdSaleEntity.employee_id}")
                     val entryInAssociationTable =
                         saleRepository.fetchFromAssociationTable(createdSaleEntity.id!!, entry.id)
                     assertEquals(false, entryInAssociationTable.isEmpty)
@@ -59,8 +58,12 @@ internal class SaleServiceTest @Autowired constructor(
             }
 
             // after
-            saleRepository.deleteFromAssociationTable(createdSaleEntity.id!!)
-            saleRepository.deleteById(createdSaleEntity.id!!)
+            try {
+                saleRepository.deleteFromAssociationTable(createdSaleEntity.id!!)
+                saleRepository.deleteById(createdSaleEntity.id!!)
+            } catch (e: Exception) {
+                println(e)
+            }
         }
     }
 }

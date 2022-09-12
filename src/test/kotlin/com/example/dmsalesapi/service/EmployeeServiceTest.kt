@@ -1,5 +1,6 @@
 package com.example.dmsalesapi.service
 
+import com.example.dmsalesapi.model.Employee
 import com.example.dmsalesapi.repository.EmployeeRepository
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Assertions.*
@@ -18,8 +19,7 @@ import java.lang.Exception
 @SpringBootTest
 @AutoConfigureMockMvc
 internal class EmployeeServiceTest @Autowired constructor(
-    val mockMvc: MockMvc,
-    val employeeRepository: EmployeeRepository,
+    val mockMvc: MockMvc, val employeeRepository: EmployeeRepository, val objectMapper: ObjectMapper
 ) {
     val baseURL: String = "/employees/"
 
@@ -32,7 +32,7 @@ internal class EmployeeServiceTest @Autowired constructor(
             // when
             val performPost = mockMvc.post(baseURL) {
                 contentType = MediaType.APPLICATION_JSON
-                content = "{\"name\":\"Test Name\",\"mobile\":\"9999999999\",\"role\":\"hr\"}"
+                content = "{\"name\":\"Test Name\",\"mobile\":\"9999999999\",\"role\":\"hr\", \"is_trainer\":true}"
             }
 
             //then
@@ -43,11 +43,10 @@ internal class EmployeeServiceTest @Autowired constructor(
                 }
             }.andReturn()
 
-            // Weird hacks here, REFACTOR
-            // Gets the id from the string version of the response, should ideally be converted to an object and parsed, this will fail if the response structure is changed
-            val id = result.response.contentAsString.split(',')[0].substring(6).toInt()
+            val json: String = result.response.contentAsString
+            val createdEmployee: Employee = objectMapper.readValue(json, Employee::class.java)
             try {
-                val employeeInRoleTable = employeeRepository.fetchFromHr(id)
+                val employeeInRoleTable = employeeRepository.fetchFromHr(createdEmployee.id!!)
                 assertEquals(false, employeeInRoleTable.isEmpty)
             } catch (e: Exception) {
                 println(e)
@@ -55,7 +54,7 @@ internal class EmployeeServiceTest @Autowired constructor(
 
             // after
             // Implicitly takes care of dropping value from hr table via cascade constraint
-            employeeRepository.deleteById(id)
+            employeeRepository.deleteById(createdEmployee.id!!)
         }
     }
 }
