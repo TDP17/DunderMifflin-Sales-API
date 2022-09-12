@@ -1,10 +1,12 @@
 -- Employee related tables start --
+-- ROLE CODES: 1 manager, 2 hr, 3 salesperson, 4 accountant, 5 darryl --
 CREATE TABLE IF NOT EXISTS employee
 (
     id SERIAL PRIMARY KEY,
     name VARCHAR NOT NULL,
     mobile VARCHAR NOT NULL,
-    joining_date DATE DEFAULT CURRENT_DATE NOT NULL
+    joining_date DATE DEFAULT CURRENT_DATE NOT NULL,
+    role_code INT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS manager

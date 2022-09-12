@@ -11,4 +11,5 @@ data class Employee (
     var id: Int?,
     var name: String,
     var mobile: String,
+    val role_code: Int,
 )

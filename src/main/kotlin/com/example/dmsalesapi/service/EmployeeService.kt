@@ -2,6 +2,7 @@ package com.example.dmsalesapi.service
 
 import com.example.dmsalesapi.exceptions.FieldNotProvidedException
 import com.example.dmsalesapi.exceptions.IdNotFoundException
+import com.example.dmsalesapi.exceptions.IncorrectFieldValueException
 import com.example.dmsalesapi.model.Employee
 import com.example.dmsalesapi.repository.EmployeeRepository
 import com.fasterxml.jackson.databind.JsonNode
@@ -16,11 +17,24 @@ class EmployeeService(private val employeeRepository: EmployeeRepository) {
     fun getEmployeeById(id: Int): Optional<Employee> = employeeRepository.findById(id)
 
     fun createEmployee(data: JsonNode): Employee {
+        val role: String
+        try {
+            role = data.get("role").textValue()
+        } catch (e: Exception) {
+            throw FieldNotProvidedException("Field `role` not provided")
+        }
+
+        val roleCode: Int = when (role) {
+            "manager" -> 1
+            "salesperson" -> 2
+            "hr" -> 3
+            "accountant" -> 4
+            "darryl" -> 5
+            else -> throw IncorrectFieldValueException("Field `role` provided has an incorrect value")
+        }
 
         val employee = Employee(
-            id = null,
-            data.get("name").textValue(),
-            data.get("mobile").textValue(),
+            id = null, data.get("name").textValue(), data.get("mobile").textValue(), role_code = roleCode
         )
 
         fun handleManager() {
@@ -28,7 +42,7 @@ class EmployeeService(private val employeeRepository: EmployeeRepository) {
                 val branch = data.get("branch").textValue()
                 employeeRepository.insertIntoManagerTable(branch, employee.id!!)
             } catch (e: NullPointerException) {
-                throw FieldNotProvidedException("Field `branch` not provided");
+                throw FieldNotProvidedException("Field `branch` not provided")
             }
         }
 
@@ -37,7 +51,7 @@ class EmployeeService(private val employeeRepository: EmployeeRepository) {
                 val isTrainer = data.get("is_trainer").booleanValue()
                 employeeRepository.insertIntoHrTable(isTrainer, employee.id!!)
             } catch (e: NullPointerException) {
-                throw FieldNotProvidedException("Field `is_trainer` not provided");
+                throw FieldNotProvidedException("Field `is_trainer` not provided")
             }
         }
 
@@ -46,12 +60,11 @@ class EmployeeService(private val employeeRepository: EmployeeRepository) {
                 val noOfSales = data.get("no_of_sales").intValue()
                 employeeRepository.insertIntoSalespersonTable(noOfSales, employee.id!!)
             } catch (e: NullPointerException) {
-                throw FieldNotProvidedException("Field `no_of_sales` not provided");
+                throw FieldNotProvidedException("Field `no_of_sales` not provided")
             }
         }
 
         return try {
-            val role: String = data.get("role").textValue()
             // @TODO consider a trigger for this instead of 2 operations and their error handling
             val createdEmployee = employeeRepository.save(employee)
             when (role) {
@@ -61,10 +74,9 @@ class EmployeeService(private val employeeRepository: EmployeeRepository) {
                 "accountant" -> employeeRepository.insertIntoAccountantTable(employee.id!!)
                 "darryl" -> employeeRepository.insertIntoDarrylTable(employee.id!!)
             }
-
             createdEmployee
-        } catch (e: NullPointerException) {
-            throw FieldNotProvidedException("Field `role` not provided");
+        } catch (e: Exception) {
+            throw e
         }
     }
 

@@ -38,6 +38,16 @@ class CentralExceptionHandler {
     }
 
     @ExceptionHandler
+    fun handleIncorrectFieldValue(ex: IncorrectFieldValueException): ResponseEntity<ErrorMessage> {
+        val errorMessage = ErrorMessage(
+            HttpStatus.BAD_REQUEST.value(),
+            ex.message
+        )
+
+        return ResponseEntity(errorMessage, HttpStatus.BAD_REQUEST)
+    }
+
+    @ExceptionHandler
     fun handleEmployeeNotFoundException(ex: EmployeeNotFoundException): ResponseEntity<ErrorMessage> {
         val errorMessage = ErrorMessage(
             HttpStatus.BAD_REQUEST.value(),
@@ -52,5 +62,6 @@ class DuplicateNameException(message: String) : Exception(message)
 class IdNotFoundException(message: String) : Exception(message)
 
 class FieldNotProvidedException(message: String) : Exception(message)
+class IncorrectFieldValueException(message: String) : Exception(message)
 
 class EmployeeNotFoundException(message: String) : Exception(message)
