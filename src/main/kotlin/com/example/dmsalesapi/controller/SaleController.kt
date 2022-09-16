@@ -1,5 +1,6 @@
 package com.example.dmsalesapi.controller
 
+import com.example.dmsalesapi.model.ExtendedSale
 import com.example.dmsalesapi.model.Sale
 import com.example.dmsalesapi.model.SalePostEntity
 import com.example.dmsalesapi.service.SaleService
@@ -11,11 +12,14 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping
 class SaleController(private val saleService: SaleService) {
     @GetMapping("/sales")
-    fun getItems(): MutableIterable<Sale> = saleService.getSales()
+    fun getSales(): MutableIterable<Sale> = saleService.getSales()
+
+    @GetMapping("sales/{id}")
+    fun getExtendedSale(@PathVariable id: Int): MutableList<ExtendedSale> = saleService.getExtendedSale(id)
 
     @PostMapping("/sales")
     @ResponseBody
-    fun createItem(@RequestBody sale: SalePostEntity): ResponseEntity<SalePostEntity> {
+    fun createSale(@RequestBody sale: SalePostEntity): ResponseEntity<SalePostEntity> {
         val newSale: SalePostEntity = saleService.createSale(sale)
         return ResponseEntity<SalePostEntity>(
             newSale, HttpStatus.CREATED

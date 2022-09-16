@@ -1,5 +1,6 @@
 package com.example.dmsalesapi.repository
 
+import com.example.dmsalesapi.model.ExtendedSale
 import com.example.dmsalesapi.model.Sale
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
@@ -10,6 +11,14 @@ import java.sql.Date
 import java.util.*
 
 interface SaleRepository : CrudRepository<Sale, Int> {
+    @Query(
+        value = "select sale_id, item_name from extended_sale where sale_id=:sale_id",
+        nativeQuery = true
+    )
+    fun findExtendedSale(
+        @Param("sale_id") sale_id: Int,
+    ): MutableList<Optional<ExtendedSale>>
+
     @Transactional
     @Modifying
     @Query(
@@ -45,4 +54,14 @@ interface SaleRepository : CrudRepository<Sale, Int> {
         value = "SELECT quantity FROM sale_item WHERE sale_id=:sale_id and item_id=:item_id", nativeQuery = true
     )
     fun fetchFromAssociationTable(@Param("sale_id") employee_id: Int, @Param("item_id") item_id: Int): Optional<Int>
+}
+
+interface ExtendedSaleRepository : CrudRepository<ExtendedSale, Int> {
+    @Query(
+        value = "select * from extended_sale where sale_id=:sale_id",
+        nativeQuery = true
+    )
+    fun findExtendedSale(
+        @Param("sale_id") sale_id: Int,
+    ): MutableList<ExtendedSale>
 }

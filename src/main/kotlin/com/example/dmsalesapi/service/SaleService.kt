@@ -1,14 +1,20 @@
 package com.example.dmsalesapi.service
 
+import com.example.dmsalesapi.model.ExtendedSale
 import com.example.dmsalesapi.model.ItemQuantityMappingEntity
 import com.example.dmsalesapi.model.Sale
 import com.example.dmsalesapi.model.SalePostEntity
+import com.example.dmsalesapi.repository.ExtendedSaleRepository
 import com.example.dmsalesapi.repository.SaleRepository
 import org.springframework.stereotype.Service
 
 @Service
-class SaleService(private val saleRepository: SaleRepository) {
+class SaleService(
+    private val saleRepository: SaleRepository, private val extendedSaleRepository: ExtendedSaleRepository
+) {
     fun getSales(): MutableIterable<Sale> = saleRepository.findAll()
+
+    fun getExtendedSale(id: Int): MutableList<ExtendedSale> = extendedSaleRepository.findExtendedSale(id)
 
     fun createSale(saleEntity: SalePostEntity): SalePostEntity {
         val millis = System.currentTimeMillis()
