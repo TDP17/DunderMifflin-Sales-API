@@ -93,3 +93,6 @@ CREATE TABLE IF NOT EXISTS sale_item
     quantity INT NOT NULL,
     FOREIGN KEY (sale_id, sale_date) REFERENCES sale(id, date) ON DELETE SET NULL
 );
+
+-- VIEWS
+create or replace view extended_sale as (select sale_date, item.name as item_name, quantity, item.price, employee.name as employee_name, customer.name as customer_name from sale_item inner join sale on sale_item.sale_id=sale.id inner join employee on sale.employee_id=employee.id inner join customer on sale.customer_id = customer.id inner join item on sale_item.item_id = item.id);
