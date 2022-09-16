@@ -43,7 +43,6 @@ CREATE TABLE IF NOT EXISTS darryl
 );
 
 -- Supporting tables --
--- @TODO Add an update clause on delete for employee_id, we want the customer to be accessible with set null
 CREATE TABLE IF NOT EXISTS customer
 (
     id SERIAL PRIMARY KEY,
@@ -62,7 +61,6 @@ CREATE TABLE IF NOT EXISTS item
 );
 
 -- Adds a partitioned table "sale" partitioned by "date" in 4 quarters, only works for 2022 currently.
--- @TODO decide what to do on deletion of employee id or customer id
 CREATE TABLE IF NOT EXISTS sale
 (
     id SERIAL NOT NULL,
