@@ -7,12 +7,16 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.util.*
+import javax.servlet.http.HttpServletRequest
 
 @RestController
 @RequestMapping
 class EmployeeController(private val employeeService: EmployeeService) {
     @GetMapping("/employees")
-    fun getEmployees(): MutableIterable<Employee> = employeeService.getEmployees()
+    fun getEmployees(request: HttpServletRequest): MutableIterable<Employee> {
+        println(request.getAttribute("employee_role"))
+        return employeeService.getEmployees()
+    }
 
     @GetMapping("/employees/{id}")
     fun getEmployeeById(@PathVariable id: Int): Optional<Employee> = employeeService.getEmployeeById(id)
@@ -30,8 +34,7 @@ class EmployeeController(private val employeeService: EmployeeService) {
     fun updateEmployee(@PathVariable id: Int, @RequestBody employee: Employee): ResponseEntity<String> {
         employeeService.updateEmployee(id, employee.name, employee.mobile)
         return ResponseEntity<String>(
-            "Updated successfully",
-            HttpStatus.NO_CONTENT
+            "Updated successfully", HttpStatus.NO_CONTENT
         )
     }
 
@@ -40,8 +43,7 @@ class EmployeeController(private val employeeService: EmployeeService) {
     fun deleteEmployee(@PathVariable id: Int): ResponseEntity<String> {
         employeeService.deleteEmployee(id)
         return ResponseEntity<String>(
-            "Deleted successfully",
-            HttpStatus.NO_CONTENT
+            "Deleted successfully", HttpStatus.NO_CONTENT
         )
     }
 }

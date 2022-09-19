@@ -56,6 +56,36 @@ class CentralExceptionHandler {
 
         return ResponseEntity(errorMessage, HttpStatus.BAD_REQUEST)
     }
+
+    @ExceptionHandler
+    fun handleTokenNotFoundException(ex: TokenNotFoundException): ResponseEntity<ErrorMessage> {
+        val errorMessage = ErrorMessage(
+            HttpStatus.UNAUTHORIZED.value(),
+            ex.message
+        )
+
+        return ResponseEntity(errorMessage, HttpStatus.UNAUTHORIZED)
+    }
+
+    @ExceptionHandler
+    fun handleTokenMalformedException(ex: TokenMalformedException): ResponseEntity<ErrorMessage> {
+        val errorMessage = ErrorMessage(
+            HttpStatus.UNAUTHORIZED.value(),
+            ex.message
+        )
+
+        return ResponseEntity(errorMessage, HttpStatus.UNAUTHORIZED)
+    }
+
+    @ExceptionHandler
+    fun handleUnauthorizedException(ex: UnauthorizedException): ResponseEntity<ErrorMessage> {
+        val errorMessage = ErrorMessage(
+            HttpStatus.UNAUTHORIZED.value(),
+            ex.message
+        )
+
+        return ResponseEntity(errorMessage, HttpStatus.UNAUTHORIZED)
+    }
 }
 
 class DuplicateNameException(message: String) : Exception(message)
@@ -65,3 +95,8 @@ class FieldNotProvidedException(message: String) : Exception(message)
 class IncorrectFieldValueException(message: String) : Exception(message)
 
 class EmployeeNotFoundException(message: String) : Exception(message)
+
+class TokenNotFoundException(message:String) : Exception(message)
+class TokenMalformedException(message:String) : Exception(message)
+
+class UnauthorizedException(message:String) : Exception(message)

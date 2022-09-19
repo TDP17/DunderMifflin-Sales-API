@@ -74,4 +74,6 @@ interface EmployeeRepository : CrudRepository<Employee, Int> {
         nativeQuery = true
     )
     fun fetchFromDarryl(@Param("employee_id") employee_id: Int): Optional<String>
+
+    fun findByName(name: String): Employee
 }
