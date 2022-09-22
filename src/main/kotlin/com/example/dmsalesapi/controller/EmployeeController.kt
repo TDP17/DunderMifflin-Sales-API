@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest
 class EmployeeController(private val employeeService: EmployeeService) {
     @GetMapping("/employees")
     fun getEmployees(request: HttpServletRequest): MutableIterable<Employee> {
-        println(request.getAttribute("employee_role"))
         return employeeService.getEmployees()
     }
 
