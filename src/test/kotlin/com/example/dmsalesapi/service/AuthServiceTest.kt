@@ -47,7 +47,7 @@ internal class AuthServiceTest @Autowired constructor(
     inner class SuccessfulPostRouteTests {
         @Test
         fun `should return jwt if given name is found`() {
-            val employee = Employee(id = null, name = "TAKEN", mobile = "5235235325", role_code = 2)
+            val employee = Employee(id = null, name = "TAKEN", mobile = "5235235325", role_code = 2, password = "password")
 
             val savedEmployee = employeeRepository.save(employee)
 

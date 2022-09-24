@@ -75,5 +75,5 @@ interface EmployeeRepository : CrudRepository<Employee, Int> {
     )
     fun fetchFromDarryl(@Param("employee_id") employee_id: Int): Optional<String>
 
-    fun findByName(name: String): Employee
+    fun findByEmail(email: String): Employee
 }

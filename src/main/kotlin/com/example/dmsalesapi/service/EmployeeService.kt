@@ -1,11 +1,15 @@
 package com.example.dmsalesapi.service
 
+import com.example.dmsalesapi.exceptions.DuplicateFieldException
 import com.example.dmsalesapi.exceptions.FieldNotProvidedException
 import com.example.dmsalesapi.exceptions.IdNotFoundException
 import com.example.dmsalesapi.exceptions.IncorrectFieldValueException
 import com.example.dmsalesapi.model.Employee
 import com.example.dmsalesapi.repository.EmployeeRepository
+import com.example.dmsalesapi.util.BcryptPasswordHashService
 import com.fasterxml.jackson.databind.JsonNode
+import org.hibernate.exception.ConstraintViolationException
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 import java.lang.NullPointerException
 import java.util.Optional
@@ -33,8 +37,17 @@ class EmployeeService(private val employeeRepository: EmployeeRepository) {
             else -> throw IncorrectFieldValueException("Field `role` provided has an incorrect value")
         }
 
+        val rawPassword: String = data.get("password").textValue()
+        val hasher = BcryptPasswordHashService()
+        val password: String = hasher.hash(rawPassword)
+
         val employee = Employee(
-            id = null, data.get("name").textValue(), data.get("mobile").textValue(), role_code = roleCode
+            id = null,
+            data.get("name").textValue(),
+            data.get("mobile").textValue(),
+            role_code = roleCode,
+            password,
+            email = data.get("email").textValue()
         )
 
         fun handleManager() {
@@ -74,9 +87,10 @@ class EmployeeService(private val employeeRepository: EmployeeRepository) {
                 "accountant" -> employeeRepository.insertIntoAccountantTable(employee.id!!)
                 "darryl" -> employeeRepository.insertIntoDarrylTable(employee.id!!)
             }
+            createdEmployee.password = ""
             createdEmployee
-        } catch (e: Exception) {
-            throw e
+        } catch (e: DataIntegrityViolationException) {
+            throw DuplicateFieldException("Field `email` provided already exists")
         }
     }
 

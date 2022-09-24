@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 @RestControllerAdvice
 class CentralExceptionHandler {
     @ExceptionHandler
-    fun handleIllegalStateException(ex: DuplicateNameException): ResponseEntity<ErrorMessage> {
+    fun handleDuplicateFieldException(ex: DuplicateFieldException): ResponseEntity<ErrorMessage> {
         val errorMessage = ErrorMessage(
             HttpStatus.BAD_REQUEST.value(),
             ex.message
@@ -88,7 +88,7 @@ class CentralExceptionHandler {
     }
 }
 
-class DuplicateNameException(message: String) : Exception(message)
+class DuplicateFieldException(message: String) : Exception(message)
 class IdNotFoundException(message: String) : Exception(message)
 
 class FieldNotProvidedException(message: String) : Exception(message)

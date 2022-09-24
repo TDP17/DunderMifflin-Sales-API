@@ -11,8 +11,11 @@ data class Employee(
     var name: String,
     var mobile: String,
     val role_code: Int,
+    var password: String,
+    val email: String,
 )
 
 class LoginDTO(
-    val name: String
+    val email: String,
+    val password: String,
 )

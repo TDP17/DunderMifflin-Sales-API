@@ -1,6 +1,6 @@
 package com.example.dmsalesapi.service
 
-import com.example.dmsalesapi.exceptions.DuplicateNameException
+import com.example.dmsalesapi.exceptions.DuplicateFieldException
 import com.example.dmsalesapi.exceptions.IdNotFoundException
 import com.example.dmsalesapi.exceptions.UnauthorizedException
 import com.example.dmsalesapi.model.Item
@@ -32,7 +32,7 @@ class ItemService(private val itemRepository: ItemRepository) {
             return try {
                 itemRepository.save(item)
             } catch (e: Exception) {
-                throw DuplicateNameException("Another paper with the same name exists, please update the entity instead")
+                throw DuplicateFieldException("Another paper with the same name exists, please update the entity instead")
             }
         } else throw UnauthorizedException("Not authorized to view these records")
     }

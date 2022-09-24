@@ -6,7 +6,9 @@ CREATE TABLE IF NOT EXISTS employee
     name VARCHAR NOT NULL,
     mobile VARCHAR NOT NULL,
     joining_date DATE DEFAULT CURRENT_DATE NOT NULL,
-    role_code INT NOT NULL
+    role_code INT NOT NULL,
+    email VARCHAR NOT NULL UNIQUE,
+    password VARCHAR NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS manager

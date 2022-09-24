@@ -32,7 +32,7 @@ internal class EmployeeServiceTest @Autowired constructor(
             // when
             val performPost = mockMvc.post(baseURL) {
                 contentType = MediaType.APPLICATION_JSON
-                content = "{\"name\":\"Test Name\",\"mobile\":\"9999999999\",\"role\":\"hr\", \"is_trainer\":true}"
+                content = "{\"name\":\"Test Name\",\"mobile\":\"9999999999\",\"role\":\"hr\", \"is_trainer\":true,\"password\":\"password\"}"
             }
 
             //then
