@@ -3,15 +3,20 @@ package com.example.dmsalesapi.service
 import com.example.dmsalesapi.model.Item
 import com.example.dmsalesapi.repository.ItemRepository
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.SignatureAlgorithm
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.*
+import java.util.*
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -20,9 +25,22 @@ internal class ItemServiceTest @Autowired constructor(
 ) {
     val baseURL: String = "/items/"
 
+    var token: String = ""
+
+
     @Nested
     @DisplayName("Create Tests")
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     inner class PostRouteTests {
+        @BeforeAll
+        fun createTokenForManager() {
+            val jwt =
+                Jwts.builder().setIssuer("1").setExpiration(Date(System.currentTimeMillis() + 24 * 60 * 60 * 10000))
+                    .signWith(SignatureAlgorithm.HS512, "dummysecret").compact()
+
+            token = jwt
+        }
+
         @Test
         fun `should throw an error if item name is duplicate`() {
             // For some reason if id is any duplicate value, no exception will be thrown but no data will be added either
@@ -35,7 +53,9 @@ internal class ItemServiceTest @Autowired constructor(
 
             val tempItem = itemRepository.save(item)
             item.id = tempItem.id?.plus(1)
+
             val performPost = mockMvc.post(baseURL) {
+                header("Authorization", "Bearer $token")
                 contentType = MediaType.APPLICATION_JSON
                 content = objectMapper.writeValueAsString(item)
             }
@@ -67,6 +87,7 @@ internal class ItemServiceTest @Autowired constructor(
 
             // when
             val performPost = mockMvc.post(baseURL) {
+                header("Authorization", "Bearer $token")
                 contentType = MediaType.APPLICATION_JSON
                 content = objectMapper.writeValueAsString(newItem)
             }
@@ -86,7 +107,17 @@ internal class ItemServiceTest @Autowired constructor(
 
     @Nested
     @DisplayName("Update Tests")
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     inner class PatchRouteTests {
+        @BeforeAll
+        fun createTokenForManager() {
+            val jwt =
+                Jwts.builder().setIssuer("1").setExpiration(Date(System.currentTimeMillis() + 24 * 60 * 60 * 10000))
+                    .signWith(SignatureAlgorithm.HS512, "dummysecret").compact()
+
+            token = jwt
+        }
+
         @Test
         fun `should return 404 and appropriate error if given id is not found`() {
             // given
@@ -94,6 +125,7 @@ internal class ItemServiceTest @Autowired constructor(
 
             // when
             val performUpdate = mockMvc.patch("$baseURL/-1") {
+                header("Authorization", "Bearer $token")
                 contentType = MediaType.APPLICATION_JSON
                 content = objectMapper.writeValueAsString(item)
             }
@@ -118,6 +150,7 @@ internal class ItemServiceTest @Autowired constructor(
 
             // when
             val performUpdate = mockMvc.patch("$baseURL/${item.id}") {
+                header("Authorization", "Bearer $token")
                 contentType = MediaType.APPLICATION_JSON
                 content = objectMapper.writeValueAsString(newItem)
             }
@@ -135,11 +168,23 @@ internal class ItemServiceTest @Autowired constructor(
 
     @Nested
     @DisplayName("Delete Tests")
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
     inner class DeleteRouteTests {
+        @BeforeAll
+        fun createTokenForManager() {
+            val jwt =
+                Jwts.builder().setIssuer("1").setExpiration(Date(System.currentTimeMillis() + 24 * 60 * 60 * 10000))
+                    .signWith(SignatureAlgorithm.HS512, "dummysecret").compact()
+
+            token = jwt
+        }
+
         @Test
         fun `should return 404 and appropriate error if given id is not found`() {
             // when
-            val performDelete = mockMvc.delete("$baseURL/-1")
+            val performDelete = mockMvc.delete("$baseURL/-1") {
+                header("Authorization", "Bearer $token")
+            }
 
             // then
             performDelete.andDo { print() }.andExpect {
@@ -157,14 +202,19 @@ internal class ItemServiceTest @Autowired constructor(
             itemRepository.save(item)
 
             // when
-            val performDelete = mockMvc.delete("$baseURL/${item.id}")
+            val performDelete = mockMvc.delete("$baseURL/${item.id}") {
+                header("Authorization", "Bearer $token")
+            }
 
             // then
             performDelete.andDo { print() }.andExpect {
                 status { isNoContent() }
             }
 
-            val performGet = mockMvc.get("$baseURL/${item.name}")
+            val performGet = mockMvc.get("$baseURL/${item.name}") {
+                header("Authorization", "Bearer $token")
+
+            }
             performGet.andDo { print() }.andExpect {
                 status { isOk() }
                 content {

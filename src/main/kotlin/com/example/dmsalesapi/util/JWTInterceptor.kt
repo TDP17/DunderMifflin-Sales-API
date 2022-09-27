@@ -15,9 +15,9 @@ class JWTInterceptor : HandlerInterceptor {
         if (request.requestURI == "/auth/login") return true
 
         // Enable during tests
-        return true
+//        return true
 
-        val token = request.getHeader(AUTHORIZATION)?.run { substringAfter("Token ") }
+        val token = request.getHeader(AUTHORIZATION)?.run { substringAfter("Bearer ") }
             ?: throw TokenNotFoundException("No token found")
 
         try {
